@@ -1,0 +1,13 @@
+server:
+  port: 8075
+spring:
+  application:
+    name: microconfigserver
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/praveen351/microservice_eCommerce
+          search-paths:
+           - 'microservice_config/*'
+  
