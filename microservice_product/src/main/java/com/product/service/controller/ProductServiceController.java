@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,8 +13,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
+import com.netflix.appinfo.InstanceInfo;
+import com.netflix.discovery.EurekaClient;
 import com.product.service.common.AppUtils;
 import com.product.service.exception.ResourceNotFoundException;
 import com.product.service.model.ProductObj;
@@ -23,8 +28,29 @@ import com.product.service.service.ProductService;
 public class ProductServiceController {
 
 	@Autowired
+	RestTemplateBuilder restTemplateBuilder;
+
+	@Autowired
 	ProductService mProductService;
-	
+
+	@Autowired
+	EurekaClient eurekaClient;
+
+	@GetMapping("/callprice")
+	public String getData(@RequestParam("authKey") String authKey) {
+		RestTemplate restTemplate = restTemplateBuilder.build();
+
+		InstanceInfo instanceInfo = eurekaClient.getNextServerFromEureka("micro_apigateway", false);
+		String baseUrl = instanceInfo.getHomePageUrl();
+
+		System.out.println(baseUrl);
+
+		String result = restTemplate.getForObject(baseUrl.concat("msprice/price/getTrial?authKey=" + authKey),
+				String.class);
+
+		return result;
+	}
+
 	@PostMapping("/addProduct")
 	public ResponseEntity<String> addProduct(@RequestBody ProductObj productObj) {
 		return new ResponseEntity<>(mProductService.addProduct(productObj), HttpStatus.CREATED);

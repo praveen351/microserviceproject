@@ -12,6 +12,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "tblProduct")
 @Access(value = AccessType.FIELD)
+
 public class ProductObj implements Serializable {
 	@Id
 	@Column(name = "ProductId", unique = true, nullable = false)

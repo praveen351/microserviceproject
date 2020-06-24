@@ -1,19 +1,14 @@
-package com.example.demo;
+package com.apigateway;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.example.demo.filter.ErrorFilter;
-import com.example.demo.filter.PreFilter;
+import com.apigateway.filter.PreFilter;
 
 @Configuration
 public class APIConfig {
 	@Bean
 	public PreFilter preFilter() {
 		return new PreFilter();
-	}
-	@Bean
-	public ErrorFilter errorFilter() {
-		return new ErrorFilter();
 	}
 }
